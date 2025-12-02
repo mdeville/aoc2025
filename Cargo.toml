@@ -1,30 +1,30 @@
 [package]
-name = "advent_of_code"
-version = "0.12.0"
-authors = ["Felix Spöttel <1682504+fspoettel@users.noreply.github.com>"]
-edition = "2024"
-default-run = "advent_of_code"
-publish = false
+	authors = ["Matthew Deville <kemiimek@gmail.com>"]
+	default-run = "advent_of_code"
+	edition = "2024"
+	name = "advent_of_code"
+	publish = false
+	version = "0.12.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-doctest = false
+	doctest = false
 
 [profile.dhat]
-inherits = "release"
-debug = 1
+	debug = 1
+	inherits = "release"
 
 [features]
-dhat-heap = ["dhat"]
-today = ["chrono"]
-test_lib = []
+	dhat-heap = ["dhat"]
+	test_lib = []
+	today = ["chrono"]
 
 [dependencies]
 
-# Template dependencies
-chrono = { version = "0.4.38", optional = true }
-dhat = { version = "0.3.3", optional = true }
-pico-args = "0.5.0"
-tinyjson = "2.5.1"
+	# Template dependencies
+	chrono = { version = "0.4.42", optional = true }
+	dhat = { version = "0.3.3", optional = true }
+	pico-args = "0.5.0"
+	tinyjson = "2.5.1"
 
-# Solution dependencies
+	# Solution dependencies
