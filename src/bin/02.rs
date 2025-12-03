@@ -8,16 +8,16 @@ pub fn part_one(input: &str) -> Option<u64> {
             .map(|pair| pair.split_once('-').unwrap())
             .map(|(start, end)| (start.parse::<u64>().unwrap(), end.parse::<u64>().unwrap()))
             .flat_map(|(start, end)| start..=end)
-            .filter_map(|num| {
+            .filter(|num| {
                 let nb_digits = num.ilog10() + 1;
                 if nb_digits % 2 == 0 {
                     let (left, right) = (
                         num / 10u64.pow(nb_digits / 2),
                         num % 10u64.pow(nb_digits / 2),
                     );
-                    return (left == right).then_some(num);
+                    return left == right;
                 }
-                None
+                false
             })
             .sum(),
     )
@@ -31,7 +31,7 @@ pub fn part_two(input: &str) -> Option<u64> {
             .map(|pair| pair.split_once('-').unwrap())
             .map(|(start, end)| (start.parse::<u64>().unwrap(), end.parse::<u64>().unwrap()))
             .flat_map(|(start, end)| start..=end)
-            .filter_map(|num: u64| {
+            .filter(|num| {
                 let nb_digits = num.ilog10() + 1;
                 'outer: for chunk_size in 1..=nb_digits / 2 {
                     let first = num % 10u64.pow(chunk_size);
@@ -43,9 +43,9 @@ pub fn part_two(input: &str) -> Option<u64> {
                         }
                         rest /= 10u64.pow(chunk_size);
                     }
-                    return (rest == 0).then_some(num);
+                    return rest == 0;
                 }
-                None
+                false
             })
             .sum(),
     )
