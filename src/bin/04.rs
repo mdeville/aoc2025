@@ -24,38 +24,24 @@ pub fn part_one(input: &str) -> Option<u64> {
             .filter_map(move |(x, cell)| (cell == '@').then_some((x as isize, y as isize)))
     }));
 
-    println!(
-        "Size of paper roll positions: {}",
-        paper_roll_positions.len()
-    );
-
     let mut counter: HashMap<(isize, isize), usize> =
         HashMap::with_capacity(paper_roll_positions.len());
     paper_roll_positions.iter().for_each(|&(x, y)| {
+        let mut is_alone = true;
         NEIGHBORS
             .iter()
             .map(|(nx, ny)| (x + nx, y + ny))
-            //.filter(|&(x, y)| x >= 0 && y >= 0 && x < grid_size && y < grid_size)
+            .filter(|&(x, y)| x >= 0 && y >= 0 && x < grid_size && y < grid_size)
             .for_each(|e| {
                 if paper_roll_positions.contains(&e) {
+                    is_alone = false;
                     *counter.entry(e).or_default() += 1;
                 }
-            })
-    });
-
-    println!("Size of counter: {}", counter.len());
-
-    for y in 0..grid_size {
-        for x in 0..grid_size {
-            print!(
-                "{}",
-                counter
-                    .get(&(x, y))
-                    .map_or('.', |&c| char::from_digit(c as u32, 10).unwrap())
-            )
+            });
+        if is_alone {
+            counter.insert((x, y), 1);
         }
-        println!("");
-    }
+    });
 
     Some(counter.into_values().filter(|c| *c < 4usize).count() as u64)
 }
