@@ -11,7 +11,7 @@ struct Grid {
 }
 
 impl Grid {
-    fn count_neighbors(&self) -> HashMap<(isize, isize), usize> {
+    fn compute_neighbors(&self, counter: &mut HashMap<(isize, isize), usize>) {
         const NEIGHBORS: [(isize, isize); 8] = [
             (-1, -1),
             (-1, 0),
@@ -23,8 +23,6 @@ impl Grid {
             (1, 1),
         ];
 
-        let mut counter: HashMap<(isize, isize), usize> =
-            HashMap::with_capacity(self.paper_roll_positions.len());
         self.paper_roll_positions.iter().for_each(|&(x, y)| {
             let mut is_alone = true;
             NEIGHBORS
@@ -43,8 +41,6 @@ impl Grid {
                 counter.insert((x, y), 1);
             }
         });
-
-        counter
     }
 }
 
@@ -72,12 +68,11 @@ impl FromStr for Grid {
 pub fn part_one(input: &str) -> Option<u64> {
     let grid = input.parse::<Grid>().unwrap();
 
-    Some(
-        grid.count_neighbors()
-            .into_values()
-            .filter(|c| *c < 4)
-            .count() as u64,
-    )
+    let mut counter = HashMap::with_capacity(grid.paper_roll_positions.len());
+
+    grid.compute_neighbors(&mut counter);
+
+    Some(counter.into_values().filter(|c| *c < 4).count() as u64)
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
@@ -85,11 +80,13 @@ pub fn part_two(input: &str) -> Option<u64> {
 
     let mut last_paper_roll_count = grid.paper_roll_positions.len();
     let mut nb_removed = 0;
+    let mut counter = HashMap::with_capacity(grid.paper_roll_positions.len());
     loop {
-        nb_removed += grid
-            .count_neighbors()
-            .into_iter()
-            .filter(|(_, count)| *count < 4)
+        counter.clear();
+        grid.compute_neighbors(&mut counter);
+        nb_removed += counter
+            .iter()
+            .filter(|(_, count)| **count < 4)
             .inspect(|(pos, _)| {
                 grid.paper_roll_positions.remove(pos);
             })
